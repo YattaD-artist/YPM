@@ -1,95 +1,110 @@
 :root {
-  --color-light:     #f3fdf4;
-  --color-dark:      #1b1f1d;
-  --color-primary:   #2e7d32;
-  --color-secondary: #66bb6a;
-  --color-accent1:   #a5d6a7;
-  --color-accent2:   #c8e6c9;
-  --color-info:      #009688;
-  --color-success:   #388e3c;
-  --color-warning:   #fbc02d;
-  --color-danger:    #d32f2f;
-
-  --text-color:      var(--color-dark);
-  --text-muted:      #4e6e52;
-  --card-bg:         #ffffff;
+  --light: #dfedf3;
+  --dark: #1b1917;
+  --primary: #2e6c26;
+  --secondary: #44733d;
+  --info: #3fb166;
+  --success: #48a400;
+  --warning: #ffc040;
+  --danger: #f2005c;
+  --text: #ffffff;
 }
 
-html, body {
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--color-light);
-  color: var(--text-color);
+  font-family: 'Noto Sans', sans-serif;
+}
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-box {
+  position: absolute;
+  top: 100px;
+  left: 20px;
+  background: var(--light);
+  color: var(--dark);
+  padding: 15px;
+  border-radius: 8px;
+  width: 200px;
+  font-size: 14px;
+}
+
+header {
+  background: var(--primary);
+  text-align: center;
+  padding: 20px;
+}
+
+header h1 {
+  font-size: 2rem;
+  color: var(--light);
+}
+
+header p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+nav a {
+  color: var(--light);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background: var(--secondary);
+  color: var(--text);
+}
+
+main {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
   overflow: hidden;
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.panel {
+  background: var(--primary);
+  padding: 20px;
+  width: 30%;
+  height: 0;
+  overflow: hidden;
+  transition: height 0.6s ease;
+  border-radius: 12px;
+  opacity: 0;
 }
 
-/* === Header === */
-header {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 12px 20px;
-  font-size: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.panel.visible {
+  height: 70vh;
+  opacity: 1;
 }
 
-/* === Content (giữa màn hình) === */
-main {
-  flex: 1;
-  display: flex;
-  gap: 20px;
-  padding: 15px 20px;
-  box-sizing: border-box;
-}
-
-#weather-box {
-  width: 200px;
-  background-color: var(--card-bg);
-  border: 2px solid var(--color-info);
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 13px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-}
-
-#weather-box h3 {
-  margin: 0 0 6px;
-  font-size: 15px;
-  color: var(--color-info);
-  text-align: center;
-}
-
-.info-panel {
-  flex: 1;
-  background-color: var(--card-bg);
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-.info-panel h2 {
-  margin: 0 0 10px;
-  font-size: 18px;
-  color: var(--color-primary);
-}
-
-/* === Footer === */
 footer {
-  background-color: var(--color-secondary);
-  color: white;
   text-align: center;
   padding: 10px;
-  font-size: 13px;
+  background: var(--primary);
+  font-size: 12px;
+  color: var(--light);
 }
