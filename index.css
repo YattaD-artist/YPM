@@ -1,11 +1,11 @@
 :root {
-  --main-color: #601e48;     /* Màu nút chính / điểm nhấn */
+  --main-color: #1d2b26;     /* Header & nút chính */
   --bg-color: #fbfaec;       /* Nền chính */
-  --other-color: #1f8c43;    /* Accent phụ */
-  --text-color: #161b39;     /* Màu chữ chính */
-  --text2-color: #1f8c43;    /* Màu phụ cho phần mô tả */
-  --accent-hover: #77ca85;   /* Hover */
-  --card-bg: #dbe2a7;        /* Nền card */
+  --other-color: #1f8c43;    /* Menu hoặc phụ */
+  --text-color: #705d50;     /* Màu chữ chính */
+  --text2-color: #1f8c43;    /* Mô tả phụ */
+  --accent-hover: #8bf595;   /* Hover sáng nổi bật */
+  --card-bg: #fefdf5;        /* Card hơi khác để nổi nhẹ */
 }
 
 body {
@@ -51,8 +51,9 @@ section {
   padding: 15px;
   margin: 10px 0;
   border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
+  border-left: 5px solid var(--main-color);
 }
 
 .card:hover {
@@ -72,7 +73,7 @@ section {
 
 .toggle-detail:hover {
   background: var(--accent-hover);
-  color: var(--text-color);
+  color: var(--main-color);
 }
 
 .detail {
@@ -97,7 +98,7 @@ footer {
   border: 2px solid var(--main-color);
   padding: 10px 15px;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
   width: 220px;
   font-size: 14px;
   z-index: 999;
