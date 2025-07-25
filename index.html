@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Ao Sen Hà Đông</title>
+  <title>Ao Sen Hà Đông - Ngày & Đêm</title>
   <style>
     body {
       margin: 0;
@@ -29,41 +29,48 @@
       width: 200px;
       transform: translateX(-50%);
     }
-    .controls {
-      padding: 10px;
-      background: rgba(255,255,255,0.8);
-    }
-    .cloud, .raindrop {
+    .cloud, .raindrop, .star {
       position: absolute;
-      background: white;
       border-radius: 50%;
       opacity: 0.8;
     }
     .cloud {
+      background: white;
       width: 200px; height: 60px;
       top: 10%;
       left: -200px;
       animation: float 20s linear infinite;
-    }
-    @keyframes float {
-      0% { left: -200px; }
-      100% { left: 100%; }
     }
     .raindrop {
       width: 5px; height: 15px;
       background: lightblue;
       animation: fall 1s linear infinite;
     }
-    @keyframes fall {
-      0% { top: 0; opacity: 1; }
-      100% { top: 100%; opacity: 0; }
+    .star {
+      width: 2px;
+      height: 2px;
+      background: white;
+      opacity: 0.6;
+      animation: twinkle 2s infinite alternate;
     }
     .wind {
       animation: sway 3s infinite alternate;
     }
+    @keyframes float {
+      0% { left: -200px; }
+      100% { left: 100%; }
+    }
+    @keyframes fall {
+      0% { top: 0; opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
     @keyframes sway {
       from { transform: translateX(-5px); }
       to { transform: translateX(10px); }
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
     }
     #info {
       padding: 12px;
@@ -80,25 +87,27 @@
   <div id="info">Đang tải thời tiết Hà Đông...</div>
 
 <script>
+const API_KEY = '7787f162c8017c9c97a8a9ac9c271644';
+const lat = 20.961, lon = 105.768;
 const sky = document.getElementById('sky');
 const lotus = document.querySelector('.lotus');
 const info = document.getElementById('info');
-
-const API_KEY = '7787f162c8017c9c97a8a9ac9c271644';
-const lat = 20.961, lon = 105.768;
 
 async function getWeather() {
   try {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${API_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
-    console.log(data);
 
-    const condition = data.weather[0].main.toLowerCase(); // 'clear', 'clouds', 'rain'...
+    const now = Date.now() / 1000; // thời gian hiện tại (giây)
+    const sunrise = data.sys.sunrise;
+    const sunset = data.sys.sunset;
+    const isNight = now < sunrise || now > sunset;
+
+    const condition = data.weather[0].main.toLowerCase(); // 'clear', 'rain', 'clouds'
     const temp = data.main.temp;
     const wind = data.wind.speed;
 
-    // xử lý trời
     if (condition.includes('rain')) {
       setSkyRainy();
     } else if (condition.includes('cloud')) {
@@ -107,16 +116,31 @@ async function getWeather() {
       setSkySunny();
     }
 
-    // xử lý gió
+    if (isNight) {
+      applyNightMode();
+    }
+
     if (wind > 5) {
       lotus.classList.add('wind');
     }
 
-    // cập nhật info
-    info.innerText = `Trạng thái: ${data.weather[0].description} | Nhiệt độ: ${temp}°C | Gió: ${wind} m/s`;
+    info.innerText = `Trạng thái: ${data.weather[0].description} | Nhiệt độ: ${temp}°C | Gió: ${wind} m/s ${isNight ? '| Ban đêm 🌙' : '| Ban ngày ☀️'}`;
   } catch (e) {
-    info.innerText = "Lỗi khi tải dữ liệu thời tiết!";
+    info.innerText = "Lỗi khi tải thời tiết!";
     console.error(e);
+  }
+}
+
+function applyNightMode() {
+  sky.style.background = '#0b0c2a';
+  removeWeatherElements();
+
+  for (let i = 0; i < 100; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    sky.appendChild(star);
   }
 }
 
@@ -150,7 +174,7 @@ function setSkyRainy() {
 }
 
 function removeWeatherElements() {
-  document.querySelectorAll('.cloud, .raindrop').forEach(el => el.remove());
+  document.querySelectorAll('.cloud, .raindrop, .star').forEach(el => el.remove());
 }
 
 getWeather();
