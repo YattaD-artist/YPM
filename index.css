@@ -1,10 +1,11 @@
 :root {
-  --main-color: #40b340;
-  --bg-color: #e7e7ec;
-  --other-color: #2d9821;
-  --text-color: #373839;
-  --text2-color: #265f4f;
-  --hihi: #3f505b;
+  --main-color: #601e48;     /* Màu nút chính / điểm nhấn */
+  --bg-color: #fbfaec;       /* Nền chính */
+  --other-color: #1f8c43;    /* Accent phụ */
+  --text-color: #161b39;     /* Màu chữ chính */
+  --text2-color: #1f8c43;    /* Màu phụ cho phần mô tả */
+  --accent-hover: #77ca85;   /* Hover */
+  --card-bg: #dbe2a7;        /* Nền card */
 }
 
 body {
@@ -46,11 +47,11 @@ section {
 }
 
 .card {
-  background: white;
+  background: var(--card-bg);
   padding: 15px;
   margin: 10px 0;
   border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease;
 }
 
@@ -66,6 +67,12 @@ section {
   padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggle-detail:hover {
+  background: var(--accent-hover);
+  color: var(--text-color);
 }
 
 .detail {
@@ -78,10 +85,9 @@ footer {
   text-align: center;
   padding: 15px;
   font-size: 14px;
-  background: #eee;
+  background: var(--card-bg);
   margin-top: 30px;
 }
-
 
 #weather-box {
   position: fixed;
@@ -101,11 +107,11 @@ footer {
   margin-top: 0;
   margin-bottom: 8px;
   font-size: 16px;
-  color: #2e8b57;
+  color: var(--main-color);
   text-align: center;
 }
 
 #weather-info {
-  color: var(--hihi);
+  color: var(--text-color);
   line-height: 1.4;
 }
