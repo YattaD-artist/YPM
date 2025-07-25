@@ -4,69 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Y Phương Minh</title>
-  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  
-<div id="weather-box">
-  <h3>Thời tiết tại phòng khám</h3>
-  <div id="weather-info">Đang tải dữ liệu...</div>
-</div>
 
-<header>
-  <h1>Y Phương Minh</h1>
-  <p>Phòng Chẩn Trị Y Học Cổ Truyền </p>
-</header>
-
-<nav>
-  <a href="#gioithieu">Giới thiệu</a>
-  <a href="#dichvu">Dịch vụ</a>
-  <a href="#lienhe">Liên hệ</a>
-</nav>
-
-<section id="gioithieu">
-  <h2>Bạn có biết?</h2>
-  <div class="card">
-    <p>HOHOHOHO.</p>
-  </div>
-</section>
-
-<section id="dichvu">
-  <h2>Dịch Vụ</h2>
-
-  <div class="card">
-    <h3>Khám tổng quát</h3>
-    <button class="toggle-detail">Chi tiết</button>
-    <div class="detail">HIHI.</div>
+  <div class="weather-box">
+    <h3>Thời tiết tại phòng khám</h3>
+    <div id="weather-info">Đang tải dữ liệu...</div>
   </div>
 
-  <div class="card">
-    <h3>Xoa bóp, Bấm huyệt</h3>
-    <button class="toggle-detail">Chi tiết</button>
-    <div class="detail"> HEHE.</div>
-  </div>
+  <header>
+    <h1>Y Phương Minh</h1>
+    <p>Phòng Chẩn Trị Y Học Cổ Truyền</p>
+    <nav>
+      <a href="#" data-target="gioithieu">Giới thiệu</a>
+      <a href="#" data-target="dichvu">Dịch vụ</a>
+      <a href="#" data-target="lienhe">Liên hệ</a>
+    </nav>
+  </header>
 
-  <div class="card">
-    <h3>Châm Cứu</h3>
-    <button class="toggle-detail">Chi tiết</button>
-    <div class="detail">HAHA.</div>
-  </div>
+  <main>
+    <section id="gioithieu" class="panel hidden">
+      <h2>Giới Thiệu</h2>
+      <p>Phòng khám chuyên chữa trị bằng y học cổ truyền, kết hợp giữa y học dân tộc và hiện đại để nâng cao sức khỏe.</p>
+    </section>
 
-</section>
+    <section id="dichvu" class="panel hidden">
+      <h2>Dịch Vụ</h2>
+      <ul>
+        <li>Khám tổng quát</li>
+        <li>Xoa bóp, bấm huyệt</li>
+        <li>Châm cứu</li>
+      </ul>
+    </section>
 
-<section id="lienhe">
-  <h2>Đặt Lịch & Liên Hệ</h2>
-  <div class="card">
-    <p><strong>Địa chỉ:</strong> B04-L20 Khu Đô Thị Dương Nội, Dương Nội, Hà Đông, Hà Nội</p>
-    <p><strong>Hotline:</strong> 0383836863</p>
-    <p><strong>Thời gian làm việc:</strong> Thứ 2 - Thứ 7, 7h - 17h</p>
-  </div>
-</section>
+    <section id="lienhe" class="panel hidden">
+      <h2>Liên Hệ</h2>
+      <p><strong>Địa chỉ:</strong> B04-L20 KĐT Dương Nội, Hà Đông, Hà Nội</p>
+      <p><strong>Hotline:</strong> 0383836863</p>
+      <p><strong>Thời gian làm việc:</strong> Thứ 2 - Thứ 7, 7h - 17h</p>
+    </section>
+  </main>
 
-<footer>
-  &copy; 2025 Phòng Khám Y Phương Minh.
-</footer>
+  <footer>
+    &copy; 2025 Phòng Khám Y Phương Minh
+  </footer>
 
-<script src="index.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
