@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Ao Sen thời tiết Hà Đông</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      transition: background 1s;
+    }
+    .sky {
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      background: #87ceeb; /* trời mặc định */
+      overflow: hidden;
+      transition: background 1s;
+    }
+    .pond {
+      width: 100%;
+      height: 30vh;
+      background: #2d5000;
+      position: relative;
+    }
+    .lotus {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      width: 200px;
+      transform: translateX(-50%);
+    }
+    .controls {
+      padding: 10px;
+      background: rgba(255,255,255,0.8);
+    }
+    .cloud, .raindrop {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+    .cloud { width: 200px; height: 60px; top: 10%; left: -200px; animation: float 20s linear infinite; }
+    @keyframes float { 0% { left: -200px; } 100% { left: 100%; } }
+    .raindrop {
+      width: 5px; height: 15px;
+      background: lightblue;
+      border-radius: 2px;
+      animation: fall 1s linear infinite;
+    }
+    @keyframes fall { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+    .wind {
+      animation: sway 3s infinite alternate;
+    }
+    @keyframes sway { from { transform: translateX(0); } to { transform: translateX(20px); } }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <label>Trạng thái trời:
+      <select id="weather_kind">
+        <option value="sunny">Nắng</option>
+        <option value="rainy">Mưa</option>
+        <option value="cloudy">Râm</option>
+      </select>
+    </label>
+    <label>Nhiệt độ:
+      <select id="temp_kind">
+        <option value="hot">Nóng</option>
+        <option value="warm">Mát</option>
+        <option value="cold">Lạnh</option>
+      </select>
+    </label>
+    <label>Gió:
+      <select id="wind_kind">
+        <option value="normal">Bình thường</option>
+        <option value="windy">Gió to</option>
+      </select>
+    </label>
+  </div>
+  <div class="sky" id="sky">
+    <img src="https://i.imgur.com/ypxYb6r.png" class="lotus" alt="Hoa sen">
+  </div>
+  <div class="pond"></div>
+
+<script>
+const sky = document.getElementById('sky');
+const weatherSel = document.getElementById('weather_kind');
+const tempSel = document.getElementById('temp_kind');
+const windSel = document.getElementById('wind_kind');
+
+function updateScene() {
+  // bầu trời
+  const w = weatherSel.value;
+  if (w === 'sunny') sky.style.background = '#87ceeb';
+  else if (w === 'cloudy') sky.style.background = '#aec6cf';
+  else if (w === 'rainy') sky.style.background = '#708090';
+  // nhiệt độ: hiển thị text
+  let tempText = {hot:'Nóng', warm:'Mát', cold:'Lạnh'}[tempSel.value];
+  // gió: cắm class sway hoặc không
+  const lotus = document.querySelector('.lotus');
+  lotus.classList.remove('wind');
+  if (windSel.value === 'windy') lotus.classList.add('wind');
+  // xóa cảnh mưa hoặc mây nếu có
+  document.querySelectorAll('.cloud').forEach(e=>e.remove());
+  document.querySelectorAll('.raindrop').forEach(e=>e.remove());
+  // thêm mây
+  if (w === 'cloudy' || w === 'rainy') {
+    for (let i=0;i<3;i++){
+      const c = document.createElement('div');
+      c.className = 'cloud';
+      c.style.top = (10 + i*15)+'%';
+      c.style.animationDuration = (20 + i*5)+'s';
+      sky.appendChild(c);
+    }
+  }
+  // thêm mưa
+  if (w === 'rainy') {
+    for (let i=0;i<50;i++){
+      const r = document.createElement('div');
+      r.className = 'raindrop';
+      r.style.left = Math.random()*100 + '%';
+      r.style.animationDelay = (Math.random()*1)+'s';
+      sky.appendChild(r);
+    }
+  }
+  // hiện trạng thái nhiệt độ và gió
+  let info = 'Trời: ' + weatherSel.options[weatherSel.selectedIndex].text +
+             ' | Nhiệt độ: ' + tempText +
+             ' | Gió: ' + (windSel.value==='windy'?'Gió to':'Bình thường');
+  document.getElementById('info')?.remove();
+  const p = document.createElement('p');
+  p.id = 'info';
+  p.style.padding = '10px';
+  p.innerText = info;
+  document.body.appendChild(p);
+}
+
+weatherSel.onchange = updateScene;
+tempSel.onchange = updateScene;
+windSel.onchange = updateScene;
+
+updateScene();
+</script>
+</body>
+</html>
