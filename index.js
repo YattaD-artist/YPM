@@ -1,8 +1,15 @@
-// Nhấn //
-document.querySelectorAll('.toggle-detail').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const detail = btn.nextElementSibling;
-    detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = link.getAttribute('data-target');
+
+    document.querySelectorAll('.panel').forEach(panel => {
+      if (panel.id === target) {
+        panel.classList.toggle('visible');
+      } else {
+        panel.classList.remove('visible');
+      }
+    });
   });
 });
 
