@@ -4,7 +4,119 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Y Phương Minh</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --light: #dfedf3;
+      --dark: #1b1917;
+      --primary: #2e6c26;
+      --secondary: #44733d;
+      --info: #3fb166;
+      --success: #48a400;
+      --warning: #ffc040;
+      --danger: #f2005c;
+      --text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans', sans-serif;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .weather-box {
+      position: absolute;
+      top: 100px;
+      left: 20px;
+      background: var(--light);
+      color: var(--dark);
+      padding: 15px;
+      border-radius: 8px;
+      width: 200px;
+      font-size: 14px;
+    }
+
+    header {
+      background: var(--primary);
+      text-align: center;
+      padding: 15px 20px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      color: var(--light);
+    }
+
+    header p {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding-bottom: 10px;
+    }
+
+    nav a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+    }
+
+    nav a:hover {
+      background: var(--secondary);
+      color: var(--text);
+    }
+
+    main {
+      position: relative;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 10px 20px;
+      overflow: hidden;
+    }
+
+    .panel {
+      background: var(--primary);
+      padding: 15px;
+      width: 30%;
+      height: 0;
+      overflow: hidden;
+      transition: height 0.5s ease;
+      border-radius: 10px;
+      opacity: 0;
+    }
+
+    .panel.visible {
+      height: 65vh;
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: var(--primary);
+      font-size: 12px;
+      color: var(--light);
+    }
+  </style>
 </head>
 <body>
 
@@ -50,6 +162,50 @@
     &copy; 2025 Phòng Khám Y Phương Minh
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = link.getAttribute('data-target');
+
+        document.querySelectorAll('.panel').forEach(panel => {
+          if (panel.id === target) {
+            panel.classList.toggle('visible');
+          } else {
+            panel.classList.remove('visible');
+          }
+        });
+      });
+    });
+
+    async function fetchWeather() {
+      const API_KEY = '7787f162c8017c9c97a8a9ac9c271644';
+      const lat = 20.961;
+      const lon = 105.768;
+      const weatherInfo = document.getElementById('weather-info');
+
+      try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${API_KEY}`);
+        const data = await res.json();
+
+        const temp = Math.round(data.main.temp);
+        const feels = Math.round(data.main.feels_like);
+        const desc = data.weather[0].description;
+        const wind = data.wind.speed;
+
+        weatherInfo.innerHTML = `
+          <strong>${desc.charAt(0).toUpperCase() + desc.slice(1)}</strong><br>
+          Nhiệt độ: ${temp}°C<br>
+          Cảm giác: ${feels}°C<br>
+          Gió: ${wind} m/s
+        `;
+      } catch (e) {
+        weatherInfo.innerText = 'Không thể tải dữ liệu thời tiết.';
+        console.error(e);
+      }
+    }
+
+    fetchWeather();
+  </script>
 </body>
 </html>
