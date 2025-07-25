@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Ao Sen thời tiết Hà Đông</title>
+  <title>Ao Sen Hà Đông</title>
   <style>
     body {
       margin: 0;
@@ -13,7 +13,7 @@
       position: relative;
       width: 100%;
       height: 70vh;
-      background: #87ceeb; /* trời mặc định */
+      background: #87ceeb;
       overflow: hidden;
       transition: background 1s;
     }
@@ -21,7 +21,6 @@
       width: 100%;
       height: 30vh;
       background: #2d5000;
-      position: relative;
     }
     .lotus {
       position: absolute;
@@ -40,107 +39,121 @@
       border-radius: 50%;
       opacity: 0.8;
     }
-    .cloud { width: 200px; height: 60px; top: 10%; left: -200px; animation: float 20s linear infinite; }
-    @keyframes float { 0% { left: -200px; } 100% { left: 100%; } }
+    .cloud {
+      width: 200px; height: 60px;
+      top: 10%;
+      left: -200px;
+      animation: float 20s linear infinite;
+    }
+    @keyframes float {
+      0% { left: -200px; }
+      100% { left: 100%; }
+    }
     .raindrop {
       width: 5px; height: 15px;
       background: lightblue;
-      border-radius: 2px;
       animation: fall 1s linear infinite;
     }
-    @keyframes fall { 0% { top: 0; opacity: 1; } 100% { top: 100%; opacity: 0; } }
+    @keyframes fall {
+      0% { top: 0; opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
     .wind {
       animation: sway 3s infinite alternate;
     }
-    @keyframes sway { from { transform: translateX(0); } to { transform: translateX(20px); } }
+    @keyframes sway {
+      from { transform: translateX(-5px); }
+      to { transform: translateX(10px); }
+    }
+    #info {
+      padding: 12px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.7);
+    }
   </style>
 </head>
 <body>
-  <div class="controls">
-    <label>Trạng thái trời:
-      <select id="weather_kind">
-        <option value="sunny">Nắng</option>
-        <option value="rainy">Mưa</option>
-        <option value="cloudy">Râm</option>
-      </select>
-    </label>
-    <label>Nhiệt độ:
-      <select id="temp_kind">
-        <option value="hot">Nóng</option>
-        <option value="warm">Mát</option>
-        <option value="cold">Lạnh</option>
-      </select>
-    </label>
-    <label>Gió:
-      <select id="wind_kind">
-        <option value="normal">Bình thường</option>
-        <option value="windy">Gió to</option>
-      </select>
-    </label>
-  </div>
   <div class="sky" id="sky">
     <img src="https://i.imgur.com/ypxYb6r.png" class="lotus" alt="Hoa sen">
   </div>
   <div class="pond"></div>
+  <div id="info">Đang tải thời tiết Hà Đông...</div>
 
 <script>
 const sky = document.getElementById('sky');
-const weatherSel = document.getElementById('weather_kind');
-const tempSel = document.getElementById('temp_kind');
-const windSel = document.getElementById('wind_kind');
+const lotus = document.querySelector('.lotus');
+const info = document.getElementById('info');
 
-function updateScene() {
-  // bầu trời
-  const w = weatherSel.value;
-  if (w === 'sunny') sky.style.background = '#87ceeb';
-  else if (w === 'cloudy') sky.style.background = '#aec6cf';
-  else if (w === 'rainy') sky.style.background = '#708090';
-  // nhiệt độ: hiển thị text
-  let tempText = {hot:'Nóng', warm:'Mát', cold:'Lạnh'}[tempSel.value];
-  // gió: cắm class sway hoặc không
-  const lotus = document.querySelector('.lotus');
-  lotus.classList.remove('wind');
-  if (windSel.value === 'windy') lotus.classList.add('wind');
-  // xóa cảnh mưa hoặc mây nếu có
-  document.querySelectorAll('.cloud').forEach(e=>e.remove());
-  document.querySelectorAll('.raindrop').forEach(e=>e.remove());
-  // thêm mây
-  if (w === 'cloudy' || w === 'rainy') {
-    for (let i=0;i<3;i++){
-      const c = document.createElement('div');
-      c.className = 'cloud';
-      c.style.top = (10 + i*15)+'%';
-      c.style.animationDuration = (20 + i*5)+'s';
-      sky.appendChild(c);
+const API_KEY = '7787f162c8017c9c97a8a9ac9c271644';
+const lat = 20.961, lon = 105.768;
+
+async function getWeather() {
+  try {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=vi&appid=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log(data);
+
+    const condition = data.weather[0].main.toLowerCase(); // 'clear', 'clouds', 'rain'...
+    const temp = data.main.temp;
+    const wind = data.wind.speed;
+
+    // xử lý trời
+    if (condition.includes('rain')) {
+      setSkyRainy();
+    } else if (condition.includes('cloud')) {
+      setSkyCloudy();
+    } else {
+      setSkySunny();
     }
-  }
-  // thêm mưa
-  if (w === 'rainy') {
-    for (let i=0;i<50;i++){
-      const r = document.createElement('div');
-      r.className = 'raindrop';
-      r.style.left = Math.random()*100 + '%';
-      r.style.animationDelay = (Math.random()*1)+'s';
-      sky.appendChild(r);
+
+    // xử lý gió
+    if (wind > 5) {
+      lotus.classList.add('wind');
     }
+
+    // cập nhật info
+    info.innerText = `Trạng thái: ${data.weather[0].description} | Nhiệt độ: ${temp}°C | Gió: ${wind} m/s`;
+  } catch (e) {
+    info.innerText = "Lỗi khi tải dữ liệu thời tiết!";
+    console.error(e);
   }
-  // hiện trạng thái nhiệt độ và gió
-  let info = 'Trời: ' + weatherSel.options[weatherSel.selectedIndex].text +
-             ' | Nhiệt độ: ' + tempText +
-             ' | Gió: ' + (windSel.value==='windy'?'Gió to':'Bình thường');
-  document.getElementById('info')?.remove();
-  const p = document.createElement('p');
-  p.id = 'info';
-  p.style.padding = '10px';
-  p.innerText = info;
-  document.body.appendChild(p);
 }
 
-weatherSel.onchange = updateScene;
-tempSel.onchange = updateScene;
-windSel.onchange = updateScene;
+function setSkySunny() {
+  sky.style.background = '#87ceeb';
+  removeWeatherElements();
+}
 
-updateScene();
+function setSkyCloudy() {
+  sky.style.background = '#b0c4de';
+  removeWeatherElements();
+  for (let i = 0; i < 3; i++) {
+    const cloud = document.createElement('div');
+    cloud.className = 'cloud';
+    cloud.style.top = `${10 + i * 10}%`;
+    sky.appendChild(cloud);
+  }
+}
+
+function setSkyRainy() {
+  sky.style.background = '#708090';
+  removeWeatherElements();
+  for (let i = 0; i < 30; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'raindrop';
+    drop.style.left = `${Math.random() * 100}%`;
+    drop.style.animationDelay = `${Math.random()}s`;
+    sky.appendChild(drop);
+  }
+  setSkyCloudy();
+}
+
+function removeWeatherElements() {
+  document.querySelectorAll('.cloud, .raindrop').forEach(el => el.remove());
+}
+
+getWeather();
 </script>
 </body>
 </html>
